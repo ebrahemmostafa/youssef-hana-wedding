@@ -122,6 +122,8 @@
   /* last card: the whole Location page is one link to Google Maps */
   .loc-card { -webkit-tap-highlight-color: transparent; cursor: pointer; }
   .loc-card:active > img { filter: sepia(.1) saturate(.96) brightness(.96); }
+  .loc-btn { top: 73%; transform: translate(-50%, -50%); min-width: 74%; justify-content: center; padding: 1.05em 1.4em; }
+  .loc-card:active .loc-btn { background: rgba(60,56,30,.92); }
   @keyframes glow { 0%,100% { box-shadow: 0 6px 18px rgba(60,40,20,.3), 0 0 0 0 rgba(251,244,230,.5); } 50% { box-shadow: 0 6px 18px rgba(60,40,20,.3), 0 0 0 10px rgba(251,244,230,0); } }
 
   /* card 4: live countdown drawn over the image's own boxes */
@@ -220,8 +222,12 @@
 
     <a class="card reveal loc-card" href="https://www.google.com/maps/search/?api=1&amp;query=30.9830467%2C29.6933882"
        target="_blank" rel="noopener" aria-label="Open the location (Hilton King's Ranch, Cascadia) in Google Maps">
-      <img src="assets/5.webp" width="534" height="960" loading="lazy"
+      <img src="assets/5.webp" width="1068" height="1920" loading="lazy"
            alt="Location: Hilton King's Ranch, Cascadia — map">
+      <span class="map-btn loc-btn" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
+        Open in Google Maps
+      </span>
     </a>
 
   </div>
