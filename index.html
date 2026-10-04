@@ -75,10 +75,22 @@
     -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 4.5%, #000 95.5%, transparent 100%);
             mask-image: linear-gradient(to bottom, transparent 0, #000 4.5%, #000 95.5%, transparent 100%);
   }
-  .card:first-child > img {
-    -webkit-mask-image: linear-gradient(to bottom, #000 95.5%, transparent 100%);
-            mask-image: linear-gradient(to bottom, #000 95.5%, transparent 100%);
+  /* first page fills the screen; the divider only appears once you scroll */
+  .card.first { height: 100vh; height: 100svh; min-height: 480px; }
+  .card.first > img {
+    width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%;
+    -webkit-mask-image: none; mask-image: none;
   }
+  .scroll-hint {
+    position: absolute; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    font-family: var(--serif); font-weight: 600; font-size: 12px; letter-spacing: .28em; text-transform: uppercase;
+    color: #5a4428; text-shadow: 0 0 10px rgba(255,248,236,.95), 0 0 3px rgba(255,248,236,.9);
+    pointer-events: none; transition: opacity .5s ease;
+  }
+  .scroll-hint svg { width: 18px; height: 18px; animation: nudge 1.8s ease-in-out infinite; filter: drop-shadow(0 0 4px rgba(255,248,236,.95)); }
+  .scroll-hint.away { opacity: 0; }
+  @keyframes nudge { 0%,100% { transform: translateY(0); opacity: .7; } 50% { transform: translateY(5px); opacity: 1; } }
   .card:last-child > img, .card:last-child > canvas {
     -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 4.5%);
             mask-image: linear-gradient(to bottom, transparent 0, #000 4.5%);
@@ -153,9 +165,13 @@
 <main id="site" aria-hidden="true">
   <div class="wrap">
 
-    <div class="card">
+    <div class="card first">
       <img src="assets/0.webp" width="1024" height="1536"
            alt="We invite you to celebrate our wedding — Saturday 31 October 2026, 03:00 PM — Youssef &amp; Hana">
+      <div class="scroll-hint" id="scrollHint" aria-hidden="true">
+        <span>Scroll down</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
     </div>
 
     <div class="sep" aria-hidden="true"><svg viewBox="0 0 34 18" fill="currentColor"><path d="M17 1c1.6 3 3.6 5 7 6-3.4 1-5.4 3-7 6-1.6-3-3.6-5-7-6 3.4-1 5.4-3 7-6z"/><path d="M2 9c3-1.6 5.4-1.6 7 0-1.6 1.6-4 1.6-7 0zm30 0c-3-1.6-5.4-1.6-7 0 1.6 1.6 4 1.6 7 0z" opacity=".75"/><circle cx="17" cy="16.3" r="1.1"/></svg></div>
@@ -273,6 +289,12 @@
   video.addEventListener('ended', revealSite);
   video.addEventListener('error', function () { if (opened) revealSite(); });
   skip.addEventListener('click', revealSite);
+
+  /* ---------- Scroll hint fades once the guest starts scrolling ---------- */
+  var hint = document.getElementById('scrollHint');
+  window.addEventListener('scroll', function () {
+    hint.classList.toggle('away', window.scrollY > 30);
+  }, { passive: true });
 
   /* ---------- Reveal on scroll ---------- */
   var items = document.querySelectorAll('.reveal');
