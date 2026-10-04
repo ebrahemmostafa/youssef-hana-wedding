@@ -302,6 +302,37 @@
     musicBtn.style.display = 'flex';
     window.scrollTo(0, 0);
     setTimeout(function () { intro.style.display = 'none'; video.pause(); }, 1300);
+    setTimeout(startAutoScroll, 3000);
+  }
+
+  /* ---------- Auto-scroll: if the guest hasn't scrolled after 3s, glide down the invitation.
+     Any touch, wheel, key or drag hands control back to the guest for good. ---------- */
+  var AUTO_SPEED = 55;                  // px per second
+  var userTookOver = false, autoRunning = false;
+  function takeOver(e) {
+    if (!revealed) return;              // taps on the intro don't count
+    if (e && e.target && e.target.closest && e.target.closest('#music')) return;
+    userTookOver = true;
+    autoRunning = false;
+  }
+  ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach(function (ev) {
+    window.addEventListener(ev, takeOver, { passive: true });
+  });
+  function startAutoScroll() {
+    if (userTookOver || window.scrollY > 30) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    autoRunning = true;
+    var pos = window.scrollY, last = null;
+    function step(t) {
+      if (!autoRunning) return;
+      if (last !== null) pos += AUTO_SPEED * Math.min(t - last, 100) / 1000;
+      last = t;
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      if (pos >= max) { window.scrollTo(0, max); autoRunning = false; return; }
+      window.scrollTo(0, pos);
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
   }
   tap.addEventListener('click', open);
   video.addEventListener('ended', revealSite);
